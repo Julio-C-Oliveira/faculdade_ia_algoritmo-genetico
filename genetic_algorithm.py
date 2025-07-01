@@ -118,20 +118,92 @@ class CrossoverMethods:
     Classe com os métodos de reprodução.
     """
     @staticmethod
-    def cut_point_eight_eight_queen_vector(parents: list[tuple[list[int], list[int]]], crossoverRate: float, randomState: int = None) -> list[list[int]]:
+    def cut_point_eight_eight_queen_vector(parents: list[tuple[list[int], list[int]]], crossoverRate: float, round: int, randomState: int = None) -> list[list[int]]:
         """
         Reprodução entre os indivíduos utilizando a técnica ponto de corte.
 
         Args:
             parents: Lista de pares de indíviduos aleatórios selecionados para reprodução.
             crossoverRate: Taxa de cruzamento entre os indivíduos.
+            round: É o round atual da execução.
             randomState: É o estado definido para a execução.
 
         Returns:
             Uma lista com os filhos gerados.
         """
+
+        def generate_sons(firstParent: list[int], secondParent: list[int], rng) -> list[list[int], list[int]]:
+            crossover_point = rng.integers(1, len(firstParent))
+            first_son = firstParent[:crossover_point] + secondParent[crossover_point:]
+            second_son = secondParent[:crossover_point] + firstParent[crossover_point:]
+            return [first_son, second_son]
+
         if randomState is not None:
             dynamicSeed = hash((randomState, round)) % (2**32)
             rng = np.random.default_rng(dynamicSeed)
         else:
             rng = np.random.default_rng()
+
+        sons = []
+        numberOfPairs = len(parents)
+        randomNumbers = rng.random(size=numberOfPairs)
+
+        for i in range(numberOfPairs):
+            if randomNumbers[i] < crossoverRate:
+                temporarySons = generate_sons(parents[i][0], parents[i][1], rng)
+                sons.append(temporarySons[0])
+                sons.append(temporarySons[1])
+
+        return sons
+    
+class Modifier:
+    """
+    Classe com os métodos de mutação.
+    """
+    @staticmethod
+    def apply_bit_flip_eight_queen_vector(sons: list[list[int]], mutationRate: float, round: int, randomState: int = None) -> list[list[int]]:
+        """
+        Gerar mutações nos individuos.
+
+        Args:
+            sons: Lista de indíviduos que podem sofrer mutação.
+            mutationRate: Taxa de cruzamento entre os indivíduos.
+            round: É o round atual da execução.
+            randomState: É o estado definido para a execução.
+
+        Returns:
+            Uma lista com os filhos mutados ou não.
+        """
+        def apply_bit_flip(son: list[int], rng):
+            mutateSon = son.copy()
+            genePosition = rng.integers(0, len(mutateSon))
+            geneValue = son[genePosition]
+
+            binaryGene = format(geneValue, '03b')
+
+            bits = list(binaryGene)
+            bits[1] = '1' if bits[1] == '0' else '0'
+
+            newValue = int(''.join(bits), 2)
+            mutateSon[genePosition] = newValue
+            return mutateSon
+
+        if randomState is not None:
+            dynamicSeed = hash((randomState, round)) % (2**32)
+            rng = np.random.default_rng(dynamicSeed)
+        else:
+            rng = np.random.default_rng()
+
+        numberOfSons = len(sons)
+
+        for i in range(numberOfSons):
+            if rng.random() < mutationRate:
+                sons[i] = apply_bit_flip(sons[i], rng)
+
+        return sons
+    
+class SuvivorCriteria:
+    """
+    Classe com os métodos de seleção dos sobreviventes.
+    """
+    
