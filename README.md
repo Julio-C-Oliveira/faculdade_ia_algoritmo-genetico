@@ -25,3 +25,29 @@ Desenvolva um algoritmo genético, em uma linguagem de programação de sua esco
 3. Mostre as cinco melhores soluções distintas encontradas pelo algoritmo.
 4. Anexe o link para um repositório ou arquivo zip contendo o código fonte do algoritmo desenvolvido.
 ***
+### Fluxograma
+<!-- TD para Top and Down, LR para Left Right -->
+```mermaid
+graph TD
+    iniciar([iniciar])
+    a(Criar população inicial)
+    b(Avaliar aptidão dos indivíduos)
+    a?{Atingiu algum critério de parada}
+    fim([fim])
+    c(Seleção dos pais)
+    d(Cruzamento)
+    e(Mutação)
+    f(Avaliar a aptidão dos indivíduos)
+    g(Seleção dos sobreviventes)
+
+    iniciar --> a
+    a --> b
+    b --> a?
+    a? -->|Sim, atingiu| fim
+    a? -->|Não, não atingiu| c
+    c --> d
+    d --> e
+    e --> f
+    f --> g
+    g --> a?
+```
