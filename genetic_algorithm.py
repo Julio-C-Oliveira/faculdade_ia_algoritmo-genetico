@@ -76,15 +76,12 @@ class ParentSelector:
 
         Args:
             population: Lista de indíviduos aleatórios utilizando a representação de vetor de 8 posições.
-
             evaluates: Lista com as pontuações dos indivíduos.
-
             round: Round atual da execução.
-
             randomState: É o estado definido para a execução.
 
         Returns:
-            Uma lista com os indivíduos selecionados.
+            Uma lista com os pares de indivíduos selecionados.
         """
         if randomState is not None:
             dynamicSeed = hash((randomState, round)) % (2**32)
@@ -93,39 +90,48 @@ class ParentSelector:
             rng = np.random.default_rng()
 
         numberOfIndividuals = len(population)
+        evaluates = 1 / np.array(evaluates)
         choiceProbabilities = np.array(evaluates)/sum(evaluates)
 
         cumulativeProbabilities = np.cumsum(choiceProbabilities)
 
-        selectedIndividuals = []
-        for _ in range(len(population)):
-            randomNumber = rng.random()
-            selectedIndex = np.searchsorted(cumulativeProbabilities, randomNumber, side="right")
-            selectedIndividuals.append(population[selectedIndex])
+        selectedPairs = []
+        randomNumbers = rng.random(size=2*len(population))
 
-        return selectedIndividuals
+        for i in range(0, len(randomNumbers), 2):
+            firstRandomNumber  = randomNumbers[i]
+            firstSelectedIndex = np.searchsorted(cumulativeProbabilities, firstRandomNumber, side="right")
 
-        # selectedIndividuals = rng.choice(
-        #     numberOfIndividuals,
-        #     size=numberOfSelections,
-        #     replace=False,
-        #     p=choiceProbabilities
-        # )
-        return 
+            secondRandomNumber = randomNumbers[i+1]
+            secondSelectedIndex = np.searchsorted(cumulativeProbabilities, secondRandomNumber, side="right")
+
+            while firstSelectedIndex == secondSelectedIndex:
+                secondRandomNumber = rng.random()
+                secondSelectedIndex = np.searchsorted(cumulativeProbabilities, secondRandomNumber, side="right")
+
+            selectedPairs.append((population[firstSelectedIndex], population[secondSelectedIndex]))
+            
+        return selectedPairs
     
 class CrossoverMethods:
     """
     Classe com os métodos de reprodução.
     """
     @staticmethod
-    def cut_point_eight_eight_queen_vector(parents: list[list[int]]):
+    def cut_point_eight_eight_queen_vector(parents: list[tuple[list[int], list[int]]], crossoverRate: float, randomState: int = None) -> list[list[int]]:
         """
         Reprodução entre os indivíduos utilizando a técnica ponto de corte.
 
         Args:
-            parents: Lista de indíviduos aleatórios selecionados para reprodução.
+            parents: Lista de pares de indíviduos aleatórios selecionados para reprodução.
+            crossoverRate: Taxa de cruzamento entre os indivíduos.
+            randomState: É o estado definido para a execução.
 
         Returns:
-            Uma lista com os indivíduos selecionados.
+            Uma lista com os filhos gerados.
         """
-        ...
+        if randomState is not None:
+            dynamicSeed = hash((randomState, round)) % (2**32)
+            rng = np.random.default_rng(dynamicSeed)
+        else:
+            rng = np.random.default_rng()
