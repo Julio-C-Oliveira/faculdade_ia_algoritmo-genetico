@@ -70,7 +70,7 @@ class ParentSelector:
     Classe com os métodos de seleção de pais.
     """
     @staticmethod
-    def select_parent_roulette_eight_queen_vector(population: list[list[int]] , evaluates: list[int], crossoverRate: float, round: int, randomState: int = None):
+    def select_parent_roulette_eight_queen_vector(population: list[list[int]], evaluates: list[int], round: int, randomState: int = None):
         """
         Seleciona os indivíduos que irão reproduzir.
 
@@ -79,7 +79,9 @@ class ParentSelector:
 
             evaluates: Lista com as pontuações dos indivíduos.
 
-            crossoverRate: Taxa de seleção dos indivíduos.
+            round: Round atual da execução.
+
+            randomState: É o estado definido para a execução.
 
         Returns:
             Uma lista com os indivíduos selecionados.
@@ -92,11 +94,38 @@ class ParentSelector:
 
         numberOfIndividuals = len(population)
         choiceProbabilities = np.array(evaluates)/sum(evaluates)
-        numberOfSelections = int(crossoverRate*numberOfIndividuals)
-        selectedIndividuals = rng.choice(
-            numberOfIndividuals,
-            size=numberOfSelections,
-            replace=False,
-            p=choiceProbabilities
-        )
-        return [population[i] for i in selectedIndividuals]
+
+        cumulativeProbabilities = np.cumsum(choiceProbabilities)
+
+        selectedIndividuals = []
+        for _ in range(len(population)):
+            randomNumber = rng.random()
+            selectedIndex = np.searchsorted(cumulativeProbabilities, randomNumber, side="right")
+            selectedIndividuals.append(population[selectedIndex])
+
+        return selectedIndividuals
+
+        # selectedIndividuals = rng.choice(
+        #     numberOfIndividuals,
+        #     size=numberOfSelections,
+        #     replace=False,
+        #     p=choiceProbabilities
+        # )
+        return 
+    
+class CrossoverMethods:
+    """
+    Classe com os métodos de reprodução.
+    """
+    @staticmethod
+    def cut_point_eight_eight_queen_vector(parents: list[list[int]]):
+        """
+        Reprodução entre os indivíduos utilizando a técnica ponto de corte.
+
+        Args:
+            parents: Lista de indíviduos aleatórios selecionados para reprodução.
+
+        Returns:
+            Uma lista com os indivíduos selecionados.
+        """
+        ...
