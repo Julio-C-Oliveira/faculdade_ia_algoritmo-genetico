@@ -206,4 +206,37 @@ class SuvivorCriteria:
     """
     Classe com os métodos de seleção dos sobreviventes.
     """
-    
+    @staticmethod
+    def random_switch_all_population_eight_queen_vector(oldPopulation: list[list[int]], 
+                                                        newPopulation: list[list[int]], 
+                                                        oldGenerationEvaluate: list[int], 
+                                                        newGenerationEvaluate: list[int],
+                                                        populationSize: int,
+                                                        round: int,
+                                                        randomState: int) -> list[list[list[int]], list[int]]:
+        """
+        Troca toda a geração anterior pela atual, ou seja, só os filhos passam para próxima.
+
+        Args:
+            oldPopulation: Lista de indíviduos da geração anterior.
+            newPopulation: Lista de indíviduos da geração atual.
+            oldGenerationEvaluate: Pontuação da geração anterior.
+            newGenerationEvaluate: Pontuação da geração atual.
+            populationSize: Número de indivíduos que a população deve ter.
+            round: É o round atual da execução.
+            randomState: É o estado definido para a execução. 
+
+        Returns:
+            Uma lista com os selecionados que irão sobreviver, e a pontuação desses individuos.
+        """
+        
+        if randomState is not None:
+            dynamicSeed = hash((randomState, round)) % (2**32)
+            rng = np.random.default_rng(dynamicSeed)
+        else:
+            rng = np.random.default_rng()
+
+        selectedIndex = rng.choice(len(newPopulation), size=populationSize, replace=False)
+        selectedPopulation = [newPopulation[i] for i in selectedIndex]
+        selectedEvaluate = [newGenerationEvaluate[i] for i in selectedIndex]
+        return selectedPopulation, selectedEvaluate
