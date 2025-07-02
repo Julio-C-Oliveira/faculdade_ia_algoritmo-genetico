@@ -216,7 +216,7 @@ class SuvivorCriteria:
                                                         newGenerationEvaluate: list[int],
                                                         populationSize: int,
                                                         round: int,
-                                                        randomState: int) -> list[list[list[int]], list[int]]:
+                                                        randomState: int) -> tuple[list[list[int]], list[int]]:
         """
         Troca toda a geração anterior pela atual, ou seja, só os filhos passam para próxima.
 
@@ -258,3 +258,34 @@ class SuvivorCriteria:
             selectedEvaluate = selectedEvaluate + selectedPlasterEvaluate
 
         return selectedPopulation, selectedEvaluate
+    
+    def elitist_replacement_eight_queen_vector(oldPopulation: list[list[int]], 
+                                               newPopulation: list[list[int]], 
+                                               oldGenerationEvaluate: list[int], 
+                                               newGenerationEvaluate: list[int],
+                                               populationSize: int) -> tuple[list[list[int]], list[int]]:
+        """
+        Seleciona somente os melhores individuos, seja parte da geração antiga ou da nova.
+
+        Args:
+            oldPopulation: Lista de indíviduos da geração anterior.
+            newPopulation: Lista de indíviduos da geração atual.
+            oldGenerationEvaluate: Pontuação da geração anterior.
+            newGenerationEvaluate: Pontuação da geração atual.
+            populationSize: Número de indivíduos que a população deve ter.
+
+        Returns:
+            Uma lista com os selecionados que irão sobreviver, e a pontuação desses individuos.
+        """
+
+        allIndividuals = oldPopulation + newPopulation
+        allScores = oldGenerationEvaluate + newGenerationEvaluate
+
+        paired = sorted(zip(allIndividuals, allScores), key=lambda tupla: tupla[1])
+
+        allIndividualsSorted, allScoresSorted = zip(*paired)
+
+        allIndividualsSorted = list(allIndividualsSorted)
+        allScoresSorted = list(allScoresSorted)
+
+        return allIndividualsSorted[:populationSize], allScoresSorted[:populationSize]
