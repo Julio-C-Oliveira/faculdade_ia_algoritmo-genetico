@@ -1,5 +1,4 @@
 from genetic_algorithm import *
-from random import randint
 
 def run(POPULATION_SIZE,
         CROSSOVER_RATE,
@@ -74,6 +73,7 @@ def getBestIndividual(individuals: list[list[int]], scores: list[int]) -> list[l
     return individuals[minValueIndex], scores[minValueIndex]
 
 print("\nTask, c) As 5 melhores soluções distintas encontradas:")
+
 for RANDOM_STATE in RANDOM_STATES:
     bestIndividual, bestScore, endRound = run(POPULATION_SIZE,
         CROSSOVER_RATE,
@@ -93,7 +93,30 @@ for RANDOM_STATE in RANDOM_STATES:
     print(f"Melhor individuo: {bestIndividual} | Pontuação: {bestScore} | Encontrado no round: {endRound}")
 
 print("\nTask, b) A média e o desvio-padrão do número de iterações até a parada do algoritmo:")
-for RANDOM_STATE in [randint(0, 2**32) for _ in range(500)]:
+
+import numpy as np
+from random import randint
+from time import time
+
+numberOfExecutions = 5000
+maxRandomState = 2**32
+printRound = 50
+
+results = {
+    "Individuals" : [],
+    "Scores" : [],
+    "End Rounds" : [],
+    "Execution Times" : []
+}
+
+roundCounter = 1
+for RANDOM_STATE in [randint(0, maxRandomState) for _ in range(numberOfExecutions)]:
+    if roundCounter % printRound == 0:
+        print(f"Round: {roundCounter}")
+    roundCounter += 1
+
+    startTime = time()
+
     bestIndividual, bestScore, endRound = run(POPULATION_SIZE,
         CROSSOVER_RATE,
         MUTATION_RATE,
@@ -109,4 +132,11 @@ for RANDOM_STATE in [randint(0, 2**32) for _ in range(500)]:
         survivor_selection_strategy = SuvivorCriteria.random_switch_all_population_eight_queen_vector,
         return_best_individual_and_score_function = getBestIndividual)
 
-    print(f"Melhor individuo: {bestIndividual} | Pontuação: {bestScore} | Encontrado no round: {endRound}")
+    results["Individuals"].append(bestIndividual)
+    results["Scores"].append(bestScore)
+    results["End Rounds"].append(endRound)
+    results["Execution Times"].append(time() - startTime)
+
+print(f"\nO número de execuções foi: {numberOfExecutions}")
+print(f"|- Número médio de gerações: {np.mean(results['End Rounds']):.2f} | Desvio padrão no número de gerações: {np.std(results['End Rounds']):.2f}")
+print(f"|- Tempo médio de execução: {np.mean(results['Execution Times']):.2f} | Desvio padrão no tempo de execução: {np.std(results['Execution Times']):.2f}")
