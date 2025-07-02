@@ -52,7 +52,7 @@ def run(POPULATION_SIZE,
         mutateSons = mutation_strategy(sons, MUTATION_RATE, round, RANDOM_STATE)
         sonsEvaluates = evaluate_population(mutateSons)
 
-        population, evaluates =  survivor_selection_strategy(population, mutateSons, evaluates, sonsEvaluates, POPULATION_SIZE, round, RANDOM_STATE)
+        population, evaluates =  survivor_selection_strategy(population, mutateSons, evaluates, sonsEvaluates, POPULATION_SIZE)
 
     bestIndividual, bestScore = return_best_individual_and_score_function(population, evaluates)
 
@@ -87,7 +87,7 @@ for RANDOM_STATE in RANDOM_STATES:
         parent_selection_strategy = ParentSelector.select_parent_roulette_eight_queen_vector,
         crossover_strategy = CrossoverMethods.cut_point_eight_eight_queen_vector,
         mutation_strategy = Modifier.apply_bit_flip_eight_queen_vector,
-        survivor_selection_strategy = SuvivorCriteria.random_switch_all_population_eight_queen_vector,
+        survivor_selection_strategy = SuvivorCriteria.elitist_replacement_eight_queen_vector,
         return_best_individual_and_score_function = getBestIndividual)
 
     print(f"Melhor individuo: {bestIndividual} | Pontuação: {bestScore} | Encontrado no round: {endRound}")
@@ -129,7 +129,7 @@ for RANDOM_STATE in [randint(0, maxRandomState) for _ in range(numberOfExecution
         parent_selection_strategy = ParentSelector.select_parent_roulette_eight_queen_vector,
         crossover_strategy = CrossoverMethods.cut_point_eight_eight_queen_vector,
         mutation_strategy = Modifier.apply_bit_flip_eight_queen_vector,
-        survivor_selection_strategy = SuvivorCriteria.random_switch_all_population_eight_queen_vector,
+        survivor_selection_strategy = SuvivorCriteria.elitist_replacement_eight_queen_vector,
         return_best_individual_and_score_function = getBestIndividual)
 
     results["Individuals"].append(bestIndividual)
