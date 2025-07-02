@@ -14,7 +14,7 @@ Desenvolva um algoritmo genético, em uma linguagem de programação de sua esco
 - Taxa de cruzamento: 0.8
 - Mutação: estrátegia do bit flip
 - Taxa de mutação: 0.03
-- [] Seleção de sobreviventes: elitista
+- [ ] Seleção de sobreviventes: elitista
 - Critério de parada:
     - Número máximo de gerações alcançado: 1000
     - Se a solução ótima foi encontrada
