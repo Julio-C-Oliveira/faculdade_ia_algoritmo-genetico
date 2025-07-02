@@ -101,13 +101,16 @@ class ParentSelector:
         for i in range(0, len(randomNumbers), 2):
             firstRandomNumber  = randomNumbers[i]
             firstSelectedIndex = np.searchsorted(cumulativeProbabilities, firstRandomNumber, side="right")
+            firstSelectedIndex = min(firstSelectedIndex, numberOfIndividuals - 1)
 
             secondRandomNumber = randomNumbers[i+1]
             secondSelectedIndex = np.searchsorted(cumulativeProbabilities, secondRandomNumber, side="right")
+            secondSelectedIndex = min(secondSelectedIndex, numberOfIndividuals - 1)
 
             while firstSelectedIndex == secondSelectedIndex:
                 secondRandomNumber = rng.random()
                 secondSelectedIndex = np.searchsorted(cumulativeProbabilities, secondRandomNumber, side="right")
+                secondSelectedIndex = min(secondSelectedIndex, numberOfIndividuals - 1)
 
             selectedPairs.append((population[firstSelectedIndex], population[secondSelectedIndex]))
             
@@ -236,7 +239,22 @@ class SuvivorCriteria:
         else:
             rng = np.random.default_rng()
 
-        selectedIndex = rng.choice(len(newPopulation), size=populationSize, replace=False)
-        selectedPopulation = [newPopulation[i] for i in selectedIndex]
-        selectedEvaluate = [newGenerationEvaluate[i] for i in selectedIndex]
+        newPopulationSize = len(newPopulation)
+        if newPopulationSize >= populationSize:
+            selectedIndex = rng.choice(newPopulationSize, size=populationSize, replace=False)
+            selectedPopulation = [newPopulation[i] for i in selectedIndex]
+            selectedEvaluate = [newGenerationEvaluate[i] for i in selectedIndex]
+        else:
+            selectedIndex = rng.choice(newPopulationSize, size=newPopulationSize, replace=False)
+            selectedPopulation = [newPopulation[i] for i in selectedIndex]
+            selectedEvaluate = [newGenerationEvaluate[i] for i in selectedIndex]
+            
+
+            selectedPlasterIndex = rng.choice(populationSize, size=(populationSize-newPopulationSize), replace=False)
+            selectedPlasterPopulation = [oldPopulation[i] for i in selectedPlasterIndex]
+            selectedPlasterEvaluate = [oldGenerationEvaluate[i] for i in selectedIndex]
+
+            selectedPopulation = selectedPopulation + selectedPlasterPopulation
+            selectedEvaluate = selectedEvaluate + selectedPlasterEvaluate
+
         return selectedPopulation, selectedEvaluate
