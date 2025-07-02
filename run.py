@@ -6,8 +6,9 @@ MUTATION_RATE:float = 0.03
 
 NUMBER_OF_GENERATIONS: int = 1000
 MIN_VALUE: int = 0
-RANDOM_STATE: int = 41
-# 41 termina de primeira
+RANDOM_STATE: int = 42
+# Individuos distintos que chegaram no 0: 41, 42, 769, 18, 27, 89, 746
+# 41 termina de primeira, 42 é o que eu uso pra testar
 
 generate_population = PopulationGenerator.generate_eight_queen_vector
 evaluate_population = PopulationAssessor.evaluate_eight_queen_vector 
@@ -16,6 +17,7 @@ parent_selection_strategy = ParentSelector.select_parent_roulette_eight_queen_ve
 crossover_strategy = CrossoverMethods.cut_point_eight_eight_queen_vector
 mutation_strategy = Modifier.apply_bit_flip_eight_queen_vector
 survivor_selection_strategy = SuvivorCriteria.random_switch_all_population_eight_queen_vector
+
 
 endRound = 0
 population = generate_population(POPULATION_SIZE, RANDOM_STATE)
