@@ -97,6 +97,7 @@ print("\nTask, b) A média e o desvio-padrão do número de iterações até a p
 import numpy as np
 from random import randint
 from time import time
+import json
 
 numberOfExecutions = 5000
 maxRandomState = 2**32
@@ -137,6 +138,5 @@ for RANDOM_STATE in [randint(0, maxRandomState) for _ in range(numberOfExecution
     results["End Rounds"].append(endRound)
     results["Execution Times"].append(time() - startTime)
 
-print(f"\nO número de execuções foi: {numberOfExecutions}")
-print(f"|- Número médio de gerações: {np.mean(results['End Rounds']):.2f} | Desvio padrão no número de gerações: {np.std(results['End Rounds']):.2f}")
-print(f"|- Tempo médio de execução: {np.mean(results['Execution Times']):.2f} | Desvio padrão no tempo de execução: {np.std(results['Execution Times']):.2f}")
+with open("documentation/results.json", "w", encoding="utf-8") as file:
+    json.dump(results, file, indent=4)
