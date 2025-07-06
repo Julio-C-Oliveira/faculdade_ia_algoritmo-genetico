@@ -3,8 +3,7 @@ Repositório criado para armazenar o trabalho de Algoritmo Genético
 - Júlio Oliveira
 - Sávio Miranda
 - Luiz Monteiro
-- X
-- X
+- Rafael Miranda
 
 # Descrição da Atividade
 Desenvolva um algoritmo genético, em uma linguagem de programação de sua escolha, para resolver o problema das oito rainhas. Uitlize obrigatoriamente a codificação binária para representar os indivíduos. Os parâmetros desse algoritmo genético devem ser:
