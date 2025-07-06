@@ -2,7 +2,7 @@ Repositório criado para armazenar o trabalho de Algoritmo Genético
 ### Equipe
 - Júlio Oliveira
 - Sávio Miranda
-- Luiz Monteiro
+- Luiz Moreira
 - Rafael Miranda
 
 # Descrição da Atividade
